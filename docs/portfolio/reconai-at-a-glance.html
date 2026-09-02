@@ -6,6 +6,11 @@
 <style>
   /* The product's own ledger-paper palette and typefaces. */
   :root {
+    --c1: #0d6d5f;
+    --c2: #b23a2c;
+    --c3: #b07d1c;
+    --c4: #2b5d8a;
+    --c5: #6b4a86;
     --ground:     #f4f1e9;
     --card:       #fbfaf5;
     --sunk:       #efeada;
@@ -29,6 +34,11 @@
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
+      --c1: #4cbfa6;
+      --c2: #e58474;
+      --c3: #dfae4e;
+      --c4: #6aacd0;
+      --c5: #b09ad4;
       --ground:     #14120e;
       --card:       #1e1b15;
       --sunk:       #191610;
@@ -48,6 +58,11 @@
   }
 
   :root[data-theme="dark"] {
+    --c1: #4cbfa6;
+    --c2: #e58474;
+    --c3: #dfae4e;
+    --c4: #6aacd0;
+    --c5: #b09ad4;
     --ground:     #14120e;
     --card:       #1e1b15;
     --sunk:       #191610;
@@ -221,7 +236,7 @@
     margin: 0;
     overflow-x: auto;
   }
-  .diagram svg { display: block; margin: 0 auto; min-width: 34rem; max-width: 100%; height: auto; }
+  .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
   .diagram figcaption {
     margin-top: 1rem;
     font-size: 0.9375rem;
@@ -334,12 +349,69 @@
     .lang__track { grid-column: 1 / -1; order: 3; }
     .linkrow { grid-template-columns: 1fr; }
   }
+
+  /* ---- Colour system -------------------------------------------------- */
+  /* Each card in a run takes the next hue, so a category is legible by
+     colour before it is read. Every hue is defined in both themes. */
+
+  .chips .chip { background: color-mix(in srgb, var(--c) 13%, var(--card)); color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 34%, transparent); }
+  .chips .chip:nth-child(5n+1) { --c: var(--c1); }
+  .chips .chip:nth-child(5n+2) { --c: var(--c2); }
+  .chips .chip:nth-child(5n+3) { --c: var(--c3); }
+  .chips .chip:nth-child(5n+4) { --c: var(--c4); }
+  .chips .chip:nth-child(5n+5) { --c: var(--c5); }
+
+  .steps .step { border-top: 3px solid var(--c); }
+  .steps .step h3 { color: var(--c); }
+  .steps .step:nth-child(3n+1) { --c: var(--c1); }
+  .steps .step:nth-child(3n+2) { --c: var(--c2); }
+  .steps .step:nth-child(3n+3) { --c: var(--c3); }
+
+  .stack .group { border-top: 3px solid var(--c); }
+  .stack .group h3 { color: var(--c); }
+  .stack .group li.hi { background: color-mix(in srgb, var(--c) 14%, var(--card)); border-color: var(--c); color: var(--c); }
+  .stack .group:nth-child(5n+1) { --c: var(--c1); }
+  .stack .group:nth-child(5n+2) { --c: var(--c2); }
+  .stack .group:nth-child(5n+3) { --c: var(--c3); }
+  .stack .group:nth-child(5n+4) { --c: var(--c4); }
+  .stack .group:nth-child(5n+5) { --c: var(--c5); }
+
+  .stats .stat { border-top-color: var(--c); }
+  .stats .stat b { color: var(--c); }
+  .stats .stat:nth-child(5n+1) { --c: var(--c1); }
+  .stats .stat:nth-child(5n+2) { --c: var(--c2); }
+  .stats .stat:nth-child(5n+3) { --c: var(--c3); }
+  .stats .stat:nth-child(5n+4) { --c: var(--c4); }
+  .stats .stat:nth-child(5n+5) { --c: var(--c5); }
+
+  .did li { border-left: 3px solid var(--c); }
+  .did li .tick { color: var(--c); }
+  .did li:nth-child(5n+1) { --c: var(--c1); }
+  .did li:nth-child(5n+2) { --c: var(--c2); }
+  .did li:nth-child(5n+3) { --c: var(--c3); }
+  .did li:nth-child(5n+4) { --c: var(--c4); }
+  .did li:nth-child(5n+5) { --c: var(--c5); }
+
+  /* ---- Role line ------------------------------------------------------- */
+  .role {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--ink-faint);
+    letter-spacing: 0.01em;
+    margin: 0;
+    max-width: none;
+  }
+
+  /* Diagrams scale down instead of forcing the page sideways. */
+  .diagram svg { min-width: 0; }
 </style>
 
 <div class="page">
 
   <header class="hero">
     <h1>ReconAI</h1>
+    <p class="role">Full-Stack Software Engineer · TypeScript · React · Next.js · LLM integration · FinTech</p>
     <p class="tagline">
       A supplier sends a bill. ReconAI checks it against <b>what you actually ordered</b> — every
       line, every sum — and comes back with <b>approve, hold, or reject</b>, with each disagreement
@@ -492,8 +564,8 @@
 
         <!-- verdict -->
         <line x1="529" y1="184" x2="529" y2="212" stroke="var(--teal)" stroke-width="2.2" marker-end="url(#ra-arrow-t)"/>
-        <rect x="450" y="216" width="158" height="60" rx="3" fill="var(--card)" stroke="var(--teal)" stroke-width="2"/>
-        <text x="529" y="241" text-anchor="middle" font-family="Fraunces, serif" font-size="15" font-weight="700" fill="var(--ink)">Approve · Hold · Reject</text>
+        <rect x="442" y="216" width="174" height="60" rx="3" fill="var(--card)" stroke="var(--teal)" stroke-width="2"/>
+        <text x="529" y="241" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="700" fill="var(--ink)">Approve · Hold · Reject</text>
         <text x="529" y="260" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">plus every mismatch, priced</text>
       </svg>
       <figcaption>
@@ -618,7 +690,7 @@
   </section>
 
   <section>
-    <h2>Technologies</h2>
+    <h2>Technical Skills</h2>
     <div class="stack">
 
       <div class="group">
@@ -685,7 +757,7 @@
   </section>
 
   <section>
-    <h2>What I built</h2>
+    <h2>Key Achievements</h2>
     <ul class="did">
       <li>
         <svg class="tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 9.5 L7 13.5 L15 4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -707,7 +779,7 @@
   </section>
 
   <section class="keywords">
-    <h3>Skills keyword summary</h3>
+    <h3>Skills &amp; Keywords</h3>
     <p>
       TypeScript · JavaScript · React · React 19 · Next.js · Next.js 16 · App Router · TSX ·
       Tailwind CSS · HTML5 · CSS3 · SVG · Responsive design · REST API · API design ·
