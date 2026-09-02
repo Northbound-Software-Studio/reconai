@@ -1,0 +1,726 @@
+<title>ReconAI at a Glance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  /* The product's own ledger-paper palette and typefaces. */
+  :root {
+    --ground:     #f4f1e9;
+    --card:       #fbfaf5;
+    --sunk:       #efeada;
+    --ink:        #17140f;
+    --ink-soft:   #5c5647;
+    --ink-faint:  #8a8372;
+    --rule:       #ddd6c4;
+    --rule-firm:  #c6bda6;
+
+    --teal:      #0d6d5f;
+    --teal-wash: #e2efe9;
+    --brick:     #b23a2c;
+    --brick-wash:#f6e3df;
+    --amber:     #b07d1c;
+    --amber-wash:#f6ecd4;
+
+    --f-head: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --f-body: 'Hanken Grotesk', -apple-system, 'Segoe UI', Arial, sans-serif;
+    --f-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:     #14120e;
+      --card:       #1e1b15;
+      --sunk:       #191610;
+      --ink:        #f0ece1;
+      --ink-soft:   #b3ac9a;
+      --ink-faint:  #8b8474;
+      --rule:       #34301f;
+      --rule-firm:  #4a4531;
+
+      --teal:      #4cbfa6;
+      --teal-wash: #10302a;
+      --brick:     #e58474;
+      --brick-wash:#341a16;
+      --amber:     #dfae4e;
+      --amber-wash:#332612;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:     #14120e;
+    --card:       #1e1b15;
+    --sunk:       #191610;
+    --ink:        #f0ece1;
+    --ink-soft:   #b3ac9a;
+    --ink-faint:  #8b8474;
+    --rule:       #34301f;
+    --rule-firm:  #4a4531;
+
+    --teal:      #4cbfa6;
+    --teal-wash: #10302a;
+    --brick:     #e58474;
+    --brick-wash:#341a16;
+    --amber:     #dfae4e;
+    --amber-wash:#332612;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: clamp(1.75rem, 5vw, 3.5rem) clamp(1.1rem, 4vw, 2.5rem) 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; border-radius: 3px; }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  h1 {
+    font-family: var(--f-head);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 6.5vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .tagline { margin: 0; font-size: clamp(1.0625rem, 2.6vw, 1.25rem); line-height: 1.5; color: var(--ink-soft); max-width: 40rem; }
+  .tagline b { color: var(--ink); font-weight: 600; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chip {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    padding: 0.32rem 0.7rem;
+    border-radius: 3px;
+    background: var(--teal-wash);
+    color: var(--teal);
+    font-weight: 500;
+  }
+  .chip--solid { background: var(--amber-wash); color: var(--amber); }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; }
+
+  h2 { font-family: var(--f-head); font-weight: 600; font-size: 1.4375rem; letter-spacing: -0.01em; margin: 0; color: var(--ink); }
+
+  p { margin: 0; max-width: 42rem; }
+  .plain { font-size: 1.0625rem; line-height: 1.65; color: var(--ink-soft); }
+  .plain b { color: var(--ink); font-weight: 600; }
+
+  /* Try it */
+  .tryit {
+    background: var(--card);
+    border: 1px solid var(--rule-firm);
+    border-left: 4px solid var(--teal);
+    border-radius: 4px;
+    padding: 1.4rem 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .tryit h2 { font-size: 1.25rem; }
+
+  .links { display: flex; flex-direction: column; gap: 0.7rem; margin: 0; }
+  .linkrow { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.25rem 1rem; align-items: baseline; }
+  .linkrow dt { font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: 0.11em; text-transform: uppercase; color: var(--ink-faint); }
+  .linkrow dd { margin: 0; }
+  .linkrow a { font-family: var(--f-mono); font-size: 0.9375rem; color: var(--teal); font-weight: 500; overflow-wrap: anywhere; }
+  .linkrow span { font-size: 0.9375rem; color: var(--ink-soft); }
+
+  .steps-login { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; counter-reset: li; }
+  .steps-login li {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    gap: 0.8rem;
+    align-items: baseline;
+    font-size: 0.9688rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .steps-login li::before {
+    counter-increment: li;
+    content: counter(li);
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--teal);
+    background: var(--teal-wash);
+    border-radius: 3px;
+    text-align: center;
+    padding: 0.1rem 0;
+  }
+  .steps-login b { color: var(--ink); font-weight: 600; }
+  .steps-login code {
+    font-family: var(--f-mono);
+    font-size: 0.8438rem;
+    background: var(--sunk);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.05rem 0.35rem;
+  }
+
+  .note { font-size: 0.875rem; color: var(--ink-faint); line-height: 1.5; border-top: 1px solid var(--rule); padding-top: 0.9rem; max-width: none; }
+
+  pre {
+    font-family: var(--f-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    background: var(--sunk);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 0.9rem 1rem;
+    margin: 0;
+    overflow-x: auto;
+    color: var(--ink-soft);
+  }
+  pre b { color: var(--ink); font-weight: 500; }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.25rem 1.2rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .step svg { display: block; }
+  .step h3 { font-family: var(--f-head); font-size: 1.0625rem; font-weight: 600; margin: 0; }
+  .step p { font-size: 0.9375rem; color: var(--ink-soft); line-height: 1.55; }
+
+  /* Diagrams */
+  .diagram {
+    background: var(--card);
+    border: 1px solid var(--rule-firm);
+    border-radius: 4px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    margin: 0;
+    overflow-x: auto;
+  }
+  .diagram svg { display: block; margin: 0 auto; min-width: 34rem; max-width: 100%; height: auto; }
+  .diagram figcaption {
+    margin-top: 1rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    text-align: center;
+    max-width: 42rem;
+    margin-inline: auto;
+    line-height: 1.55;
+  }
+  .diagram figcaption b { color: var(--ink); font-weight: 600; }
+
+  /* Languages */
+  .langs { display: flex; flex-direction: column; gap: 1.1rem; }
+  .lang { display: grid; grid-template-columns: 12rem 1fr 3.5rem; gap: 0.4rem 1rem; align-items: center; }
+  .lang__name { font-family: var(--f-head); font-size: 1rem; font-weight: 600; }
+  .lang__name span { display: block; font-family: var(--f-mono); font-size: 0.6875rem; font-weight: 400; color: var(--ink-faint); margin-top: 0.1rem; }
+  .lang__track { height: 14px; background: var(--sunk); border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+  .lang__fill { display: block; height: 100%; }
+  .lang__pct { font-family: var(--f-mono); font-size: 0.875rem; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Stack */
+  .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+  .group { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 1.1rem 1.15rem 1.25rem; }
+  .group h3 {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 0.75rem;
+  }
+  .group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .group li {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--sunk);
+    color: var(--ink-soft);
+  }
+  .group li.hi { background: var(--teal-wash); border-color: var(--teal); color: var(--teal); font-weight: 500; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 1rem; }
+  .stat { background: var(--card); border: 1px solid var(--rule); border-top: 3px solid var(--brick); border-radius: 3px; padding: 1.05rem 1rem 1.1rem; }
+  .stat b {
+    display: block;
+    font-family: var(--f-head);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span { display: block; margin-top: 0.4rem; font-size: 0.8125rem; color: var(--ink-soft); line-height: 1.35; }
+
+  /* Checks table */
+  .checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0.6rem; }
+  .check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.7rem;
+    align-items: baseline;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.9063rem;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+  .check code { font-family: var(--f-mono); font-size: 0.6875rem; color: var(--brick); }
+
+  /* Did */
+  .did { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .did li {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.85rem;
+    align-items: start;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1rem 1.15rem;
+    font-size: 0.9688rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .did b { color: var(--ink); font-weight: 600; }
+  .tick { color: var(--teal); margin-top: 0.15rem; }
+
+  .keywords { background: var(--sunk); border: 1px solid var(--rule); border-radius: 4px; padding: 1.15rem 1.25rem; }
+  .keywords h3 {
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 0.6rem;
+    font-weight: 500;
+  }
+  .keywords p { font-family: var(--f-mono); font-size: 0.8125rem; line-height: 1.85; color: var(--ink-soft); max-width: none; }
+
+  footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-faint); padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+
+  @media (max-width: 34rem) {
+    .lang { grid-template-columns: 1fr 3.5rem; }
+    .lang__track { grid-column: 1 / -1; order: 3; }
+    .linkrow { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <h1>ReconAI</h1>
+    <p class="tagline">
+      A supplier sends a bill. ReconAI checks it against <b>what you actually ordered</b> — every
+      line, every sum — and comes back with <b>approve, hold, or reject</b>, with each disagreement
+      named and priced.
+    </p>
+    <div class="chips">
+      <span class="chip chip--solid">Runs locally · no sign-in</span>
+      <span class="chip">TypeScript</span>
+      <span class="chip">Next.js 16</span>
+      <span class="chip">React 19</span>
+      <span class="chip">Claude</span>
+      <span class="chip">Stateless</span>
+      <span class="chip">Sole engineer</span>
+    </div>
+  </header>
+
+  <section class="tryit">
+    <h2>See it yourself</h2>
+    <dl class="links">
+      <div class="linkrow">
+        <dt>Source</dt>
+        <dd><a href="https://github.com/melaniesigrid/reconai">github.com/melaniesigrid/reconai</a></dd>
+      </div>
+      <div class="linkrow">
+        <dt>Hosted</dt>
+        <dd><span>Not deployed yet — it runs on your own machine in three commands.</span></dd>
+      </div>
+    </dl>
+
+    <h2>How to sign in</h2>
+    <p class="plain" style="font-size:1rem">
+      <b>You don't.</b> There is no account, no password and no database — which is the honest
+      design for a tool that handles other companies' invoices. Nothing about your documents is
+      stored anywhere after the page closes.
+    </p>
+    <ol class="steps-login">
+      <li>Clone the repository and run <code>npm install</code>.</li>
+      <li>Copy <code>.env.example</code> to <code>.env.local</code> and put an Anthropic API key in it.</li>
+      <li>Run <code>npm run dev</code> and open <code>localhost:3000</code>.</li>
+      <li><b>Want to see it work without a key at all?</b> Press <b>Preview sample output</b> on the page. That runs the real reconciliation engine in your browser against a built-in invoice that has five deliberate errors in it — the same code path, just with the AI's matching step pre-supplied.</li>
+    </ol>
+    <p class="note">
+      That last button is the point worth noticing: because the deciding half of this program needs
+      no network and no model, it can be demonstrated honestly with the model switched off.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <div class="steps">
+
+      <div class="step">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <path d="M9 5 H25 L31 11 V35 H9 Z" stroke="var(--teal)" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M25 5 V11 H31" stroke="var(--teal)" stroke-width="2" stroke-linejoin="round"/>
+          <line x1="14" y1="19" x2="26" y2="19" stroke="var(--ink-faint)" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="14" y1="24" x2="26" y2="24" stroke="var(--ink-faint)" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="14" y1="29" x2="21" y2="29" stroke="var(--ink-faint)" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <h3>1. Read the bill</h3>
+        <p>Claude transcribes every line exactly as printed — deliberately <em>without</em> correcting anything that looks wrong.</p>
+      </div>
+
+      <div class="step">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <rect x="4" y="10" width="13" height="21" rx="2" stroke="var(--ink-faint)" stroke-width="2"/>
+          <rect x="23" y="10" width="13" height="21" rx="2" stroke="var(--ink-faint)" stroke-width="2"/>
+          <path d="M17 16 H23" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M17 21 H23" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M17 26 H23" stroke="var(--brick)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2.5"/>
+        </svg>
+        <h3>2. Pair up the lines</h3>
+        <p>"Wheel stops – replace" on the bill and "Wheel stop replacement" on the order are the same job. Matching that is the one thing the AI is trusted with.</p>
+      </div>
+
+      <div class="step">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <rect x="6" y="6" width="28" height="28" rx="2" stroke="var(--teal)" stroke-width="2"/>
+          <line x1="6" y1="15" x2="34" y2="15" stroke="var(--teal)" stroke-width="1.6"/>
+          <text x="20" y="29" text-anchor="middle" font-family="Fraunces, serif" font-size="12" font-weight="700" fill="var(--brick)">≠</text>
+        </svg>
+        <h3>3. Redo every sum</h3>
+        <p>Plain code recalculates the arithmetic, totals the overbilling and returns the verdict. No model is involved in any number.</p>
+      </div>
+
+    </div>
+    <p class="plain">
+      This is exactly the job an accounts-payable clerk does by hand: <b>does this bill match what we
+      ordered, and is it safe to pay?</b>
+    </p>
+  </section>
+
+  <section>
+    <h2>Where the model is trusted, and where it is not</h2>
+    <figure class="diagram">
+      <svg viewBox="0 0 680 300" width="100%" role="img" aria-label="Diagram: the invoice goes to Claude for transcription and then to Claude for line matching, but the mapping it returns is fed into a pure TypeScript function that recomputes every figure and issues the verdict.">
+        <defs>
+          <marker id="ra-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-faint)"/>
+          </marker>
+          <marker id="ra-arrow-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/>
+          </marker>
+        </defs>
+
+        <!-- band labels -->
+        <rect x="96" y="14" width="316" height="26" rx="3" fill="var(--brick-wash)" stroke="var(--brick)" stroke-width="1.2"/>
+        <text x="254" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="var(--brick)">the model may judge wording — never money</text>
+
+        <rect x="440" y="14" width="228" height="26" rx="3" fill="var(--teal-wash)" stroke="var(--teal)" stroke-width="1.2"/>
+        <text x="554" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="var(--teal)">plain code decides every figure</text>
+
+        <line x1="426" y1="10" x2="426" y2="292" stroke="var(--ink-faint)" stroke-width="1.4" stroke-dasharray="6 5"/>
+
+        <!-- invoice -->
+        <rect x="12" y="92" width="76" height="86" rx="3" fill="var(--card)" stroke="var(--ink-faint)" stroke-width="1.8"/>
+        <text x="50" y="126" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="12" font-weight="600" fill="var(--ink)">Invoice</text>
+        <text x="50" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">PDF or</text>
+        <text x="50" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">photo</text>
+
+        <line x1="92" y1="135" x2="122" y2="118" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-arrow)"/>
+
+        <!-- extract -->
+        <rect x="128" y="74" width="132" height="62" rx="3" fill="var(--brick-wash)" stroke="var(--brick)" stroke-width="2"/>
+        <text x="194" y="98" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">Transcribe</text>
+        <text x="194" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">/api/extract</text>
+        <text x="194" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--brick)">copies, never corrects</text>
+
+        <line x1="264" y1="105" x2="292" y2="126" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-arrow)"/>
+
+        <!-- match -->
+        <rect x="296" y="106" width="120" height="62" rx="3" fill="var(--brick-wash)" stroke="var(--brick)" stroke-width="2"/>
+        <text x="356" y="130" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">Pair the lines</text>
+        <text x="356" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">/api/reconcile</text>
+        <text x="356" y="160" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--brick)">mapping + confidence</text>
+
+        <!-- PO -->
+        <rect x="128" y="196" width="132" height="62" rx="3" fill="var(--card)" stroke="var(--ink-faint)" stroke-width="1.8"/>
+        <text x="194" y="220" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">Purchase order</text>
+        <text x="194" y="237" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">what was authorised</text>
+        <line x1="264" y1="222" x2="298" y2="180" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-arrow)"/>
+
+        <!-- engine -->
+        <line x1="420" y1="137" x2="452" y2="137" stroke="var(--teal)" stroke-width="2.2" marker-end="url(#ra-arrow-t)"/>
+        <rect x="456" y="94" width="146" height="86" rx="3" fill="var(--teal-wash)" stroke="var(--teal)" stroke-width="2.5"/>
+        <text x="529" y="121" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="13" font-weight="600" fill="var(--ink)">The audit</text>
+        <text x="529" y="138" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="var(--ink-faint)">lib/reconcile.ts</text>
+        <text x="529" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">376 lines, no network</text>
+        <text x="529" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--teal)">8 checks, every time</text>
+
+        <!-- verdict -->
+        <line x1="529" y1="184" x2="529" y2="212" stroke="var(--teal)" stroke-width="2.2" marker-end="url(#ra-arrow-t)"/>
+        <rect x="450" y="216" width="158" height="60" rx="3" fill="var(--card)" stroke="var(--teal)" stroke-width="2"/>
+        <text x="529" y="241" text-anchor="middle" font-family="Fraunces, serif" font-size="15" font-weight="700" fill="var(--ink)">Approve · Hold · Reject</text>
+        <text x="529" y="260" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">plus every mismatch, priced</text>
+      </svg>
+      <figcaption>
+        The line down the middle is the whole design. <b>Ask a language model whether
+        26 × $42.00 = $1,092.00 and it will usually be right and occasionally, confidently, wrong</b>
+        — and the same invoice can come back with two different verdicts. So the model is trusted for
+        exactly one judgement: which billed line corresponds to which ordered line. Everything with a
+        dollar sign on it is computed by code you can point at.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>How the code is laid out</h2>
+    <figure class="diagram">
+      <svg viewBox="0 0 660 296" width="100%" role="img" aria-label="Code structure: the browser page and two components call two API routes, which call the Anthropic client; all of them import shared types, and only lib/reconcile.ts computes results, exercised directly by a regression test.">
+        <defs>
+          <marker id="ra-code" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-faint)"/>
+          </marker>
+        </defs>
+
+        <!-- UI layer -->
+        <text x="20" y="26" font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="0.1em" fill="var(--ink-faint)">WHAT YOU SEE</text>
+        <rect x="18" y="36" width="184" height="72" rx="3" fill="var(--card)" stroke="var(--rule-firm)" stroke-width="1.6"/>
+        <text x="110" y="60" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="500" fill="var(--ink)">app/page.tsx</text>
+        <text x="110" y="78" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="10" fill="var(--ink-faint)">upload · progress · results</text>
+        <text x="110" y="96" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="var(--ink-faint)">+ POEditor · Results</text>
+
+        <!-- API layer -->
+        <text x="248" y="26" font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="0.1em" fill="var(--ink-faint)">WHAT CALLS THE MODEL</text>
+        <rect x="246" y="36" width="164" height="72" rx="3" fill="var(--brick-wash)" stroke="var(--brick)" stroke-width="1.8"/>
+        <text x="328" y="60" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="var(--ink)">app/api/extract</text>
+        <text x="328" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="var(--ink)">app/api/reconcile</text>
+        <text x="328" y="96" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="10" fill="var(--ink-faint)">the only network calls</text>
+
+        <line x1="206" y1="72" x2="242" y2="72" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-code)"/>
+
+        <!-- anthropic -->
+        <rect x="452" y="42" width="190" height="60" rx="3" fill="var(--card)" stroke="var(--rule-firm)" stroke-width="1.6"/>
+        <text x="547" y="66" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="var(--ink)">lib/anthropic.ts</text>
+        <text x="547" y="84" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="10" fill="var(--ink-faint)">one client · one rate limiter</text>
+        <line x1="414" y1="72" x2="448" y2="72" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-code)"/>
+
+        <!-- the engine -->
+        <text x="20" y="160" font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="0.1em" fill="var(--teal)">WHAT DECIDES</text>
+        <rect x="18" y="170" width="392" height="76" rx="3" fill="var(--teal-wash)" stroke="var(--teal)" stroke-width="2.5"/>
+        <text x="214" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="500" fill="var(--ink)">lib/reconcile.ts</text>
+        <text x="214" y="215" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="11" fill="var(--ink-soft)">pure function · no imports beyond types · no I/O</text>
+        <text x="214" y="234" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="11" fill="var(--ink-soft)">same input always gives the same verdict</text>
+
+        <line x1="328" y1="112" x2="290" y2="166" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-code)"/>
+        <text x="336" y="142" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">mapping only</text>
+        <line x1="110" y1="112" x2="120" y2="166" stroke="var(--ink-faint)" stroke-width="1.8" marker-end="url(#ra-code)"/>
+        <text x="16" y="142" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink-faint)">sample mode calls it directly</text>
+
+        <!-- test -->
+        <rect x="452" y="170" width="190" height="76" rx="3" fill="var(--card)" stroke="var(--teal)" stroke-width="1.8" stroke-dasharray="5 3"/>
+        <text x="547" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="var(--ink)">test-reconcile.mts</text>
+        <text x="547" y="215" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="10" fill="var(--ink-faint)">pins the verdict, the totals</text>
+        <text x="547" y="230" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="10" fill="var(--ink-faint)">and each code, to the cent</text>
+        <line x1="448" y1="208" x2="416" y2="208" stroke="var(--teal)" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#ra-code)"/>
+
+        <text x="330" y="278" text-anchor="middle" font-family="Hanken Grotesk, sans-serif" font-size="11" fill="var(--ink-faint)">No database. Nothing is stored between requests.</text>
+      </svg>
+      <figcaption>
+        There is no database in this picture, and that is deliberate — the tool holds other
+        companies' invoices, so <b>the safest place to keep them is nowhere.</b> Note also which box
+        the test points at: the deciding function can be exercised on its own, with no server, no key
+        and no model, which is what makes a payment decision auditable.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>What it catches</h2>
+    <div class="checks">
+      <div class="check"><code>PRICE</code><span>Charged more per unit than the order allows</span></div>
+      <div class="check"><code>QTY</code><span>Billed for more than was ordered</span></div>
+      <div class="check"><code>MATH</code><span>Quantity × price doesn't equal the line total</span></div>
+      <div class="check"><code>UNEXPECTED</code><span>A charge that is on no order at all</span></div>
+      <div class="check"><code>UNBILLED</code><span>Something ordered that never got billed</span></div>
+      <div class="check"><code>SUBTOTAL</code><span>The lines don't add up to the subtotal</span></div>
+      <div class="check"><code>TAX</code><span>The tax figure doesn't follow from the subtotal</span></div>
+      <div class="check"><code>TOTAL</code><span>Subtotal plus tax doesn't equal the total</span></div>
+    </div>
+    <p class="plain">
+      A line can be wrong in two ways at once — mispriced <em>and</em> miscalculated — and the money
+      must still be counted once. Overbilling is measured per line as <b>billed minus authorised</b>,
+      never as the sum of the individual complaints. There is a regression test for exactly that.
+    </p>
+  </section>
+
+  <section>
+    <h2>Languages used</h2>
+    <div class="langs">
+
+      <div class="lang">
+        <div class="lang__name">TypeScript <span>the engine, the routes, the types</span></div>
+        <div class="lang__track"><span class="lang__fill" style="width:45%;background:var(--teal)"></span></div>
+        <div class="lang__pct" style="color:var(--teal)">45%</div>
+      </div>
+
+      <div class="lang">
+        <div class="lang__name">TSX <span>React 19 · the single page</span></div>
+        <div class="lang__track"><span class="lang__fill" style="width:42%;background:var(--brick)"></span></div>
+        <div class="lang__pct" style="color:var(--brick)">42%</div>
+      </div>
+
+      <div class="lang">
+        <div class="lang__name">CSS &amp; tooling <span>Tailwind 4 · scripts</span></div>
+        <div class="lang__track"><span class="lang__fill" style="width:13%;background:var(--amber)"></span></div>
+        <div class="lang__pct" style="color:var(--amber)">13%</div>
+      </div>
+
+    </div>
+    <p class="plain">
+      About <b>2,200 lines</b> in total, and the part that decides whether a company pays a bill is
+      <b>376 of them</b>. Keeping that number small is the feature: it is short enough to read
+      end to end before trusting it.
+    </p>
+  </section>
+
+  <section>
+    <h2>Technologies</h2>
+    <div class="stack">
+
+      <div class="group">
+        <h3>Frontend</h3>
+        <ul>
+          <li class="hi">TypeScript</li><li class="hi">React 19</li><li>Next.js 16</li>
+          <li>App Router</li><li>Tailwind CSS 4</li><li>Self-hosted fonts</li>
+          <li>Drag-and-drop upload</li>
+        </ul>
+      </div>
+
+      <div class="group">
+        <h3>Backend</h3>
+        <ul>
+          <li class="hi">Next.js route handlers</li><li>Streaming responses</li>
+          <li>Rate limiting</li><li>Stateless design</li><li>No persistence</li>
+        </ul>
+      </div>
+
+      <div class="group">
+        <h3>AI</h3>
+        <ul>
+          <li class="hi">Anthropic Claude</li><li class="hi">Tool-forced JSON</li>
+          <li>Document + vision input</li><li>Prompt engineering</li>
+          <li>Semantic matching</li><li>Confidence scoring</li><li>Hallucination containment</li>
+        </ul>
+      </div>
+
+      <div class="group">
+        <h3>The engine</h3>
+        <ul>
+          <li class="hi">Pure functions</li><li>Deterministic output</li>
+          <li>Regression testing</li><li>node:assert</li><li>tsx</li>
+        </ul>
+      </div>
+
+      <div class="group">
+        <h3>Tooling</h3>
+        <ul>
+          <li>ESLint</li><li>Playwright</li><li>Git</li><li>npm</li>
+        </ul>
+      </div>
+
+      <div class="group">
+        <h3>Domain</h3>
+        <ul>
+          <li>Accounts payable</li><li>Three-way matching</li><li>Invoice audit</li>
+          <li>Document extraction</li><li>Financial controls</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>By the numbers</h2>
+    <div class="stats">
+      <div class="stat"><b>8</b><span>Kinds of error it catches</span></div>
+      <div class="stat"><b>376</b><span>Lines that decide the verdict</span></div>
+      <div class="stat"><b>2</b><span>API routes, both to the model</span></div>
+      <div class="stat"><b>0</b><span>Databases · nothing stored</span></div>
+      <div class="stat"><b>2.2k</b><span>Lines of TypeScript</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What I built</h2>
+    <ul class="did">
+      <li>
+        <svg class="tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 9.5 L7 13.5 L15 4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>All of it</b> — the interface, the two model calls, the audit engine, the prompts, the sample data and the tests.</span>
+      </li>
+      <li>
+        <svg class="tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 9.5 L7 13.5 L15 4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Worked out where the model belongs.</b> Doing the matching without an LLM fails on real documents; doing the arithmetic with one fails on real money. The system uses each for the half it is actually good at.</span>
+      </li>
+      <li>
+        <svg class="tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 9.5 L7 13.5 L15 4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Stopped the model from being helpful.</b> Early prompts quietly "fixed" a line where the arithmetic didn't work — erasing the very error the tool exists to find. The transcription step now forbids recomputation: copy what is printed, do not correct it.</span>
+      </li>
+      <li>
+        <svg class="tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 9.5 L7 13.5 L15 4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Made it demonstrable with the AI switched off.</b> Because the deciding half is a pure function, the sample run is not a canned screenshot — it is the real engine, executing.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="keywords">
+    <h3>Skills keyword summary</h3>
+    <p>
+      TypeScript · JavaScript · React · React 19 · Next.js · Next.js 16 · App Router · TSX ·
+      Tailwind CSS · HTML5 · CSS3 · SVG · Responsive design · REST API · API design ·
+      Serverless functions · Stateless architecture · Anthropic Claude · LLM integration ·
+      Prompt engineering · Tool use · Structured output · JSON schema · Document extraction ·
+      Vision models · Semantic matching · Confidence scoring · Hallucination containment ·
+      AI evaluation · Deterministic computation · Pure functions · Unit testing ·
+      Regression testing · node:assert · tsx · Rate limiting · ESLint · Playwright · Git · npm ·
+      Accounts payable · Three-way matching · Invoice reconciliation · Financial controls ·
+      Auditability · FinTech · Full-stack development
+    </p>
+  </section>
+
+  <footer>ReconAI · Invoice-to-purchase-order reconciliation · Sole engineer · Northbound Software Studio</footer>
+
+</div>
